@@ -64,13 +64,8 @@ bot.onText(/\/unsubscribe/, async (msg, match) => {
     chatIds = await storage.getItem('chatIds');
     var index = chatIds.indexOf(chatId);
     if (index > -1) {
-      console.log(index);
-      console.log(chatIds);
-      console.log(chatId);
-      
-      let removed = chatIds.splice(index, 1)
-      
-      await storage.updateItem('chatIds', removed);
+      chatIds.splice(index, 1)
+      await storage.updateItem('chatIds', chatIds);
       bot.sendMessage(chatId, "You have been successfully unsubscribed from notifications.")
     } else {
       bot.sendMessage(chatId, "You weren't subscribed for notifications. Nothing to do!")
