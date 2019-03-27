@@ -44,12 +44,12 @@ bot.onText(/\/subscribe/, async (msg, match) => {
   let chatIds = []
   try {
     chatIds = await storage.getItem('chatIds');
-    await storage.setItem('chatIds', Array.from(new Set([...chatIds, chatId])));
+    await storage.updateItem('chatIds', Array.from(new Set([...chatIds, chatId])));
     bot.sendMessage(chatId, "You have successfully subscribed to notifications!")
   }
   catch(e) {
     // no subscriptions
-    await storage.setItem('chatIds', [chatId]);
+    await storage.updateItem('chatIds', [chatId]);
     bot.sendMessage(chatId, "You are first to successfully subscribed to notifications!")
   }
 });
@@ -60,7 +60,7 @@ bot.onText(/\/unsubscribe/, async (msg, match) => {
     chatIds = await storage.getItem('chatIds');
     var index = chatIds.indexOf(chatIds);
     if (index > -1) {
-      let uniq = await storage.setItem('chatIds', chatIds.splice(index, 1));
+      let uniq = await storage.updateItem('chatIds', chatIds.splice(index, 1));
       bot.sendMessage(chatId, "You have been successfully unsubscribed from notifications.")
     } else {
       bot.sendMessage(chatId, "You weren't subscribed for notifications. Nothing to do!")
