@@ -4,6 +4,10 @@ const axios = require('axios')
 const Gpio = require('pigpio').Gpio;
 const storage = require('node-persist');
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 const sendApplianceNotification = async (chatIds, stop, device) => {
   chatIds.map((chatId) => {
     if(stop){
@@ -30,7 +34,19 @@ const dryer = new Gpio(4, {
 washer.glitchFilter(300000);
 dryer.glitchFilter(300000);
 
-washer.on('alert', async (level, tick) => sendApplianceNotification(await storage.getItem('chatIds'), level === 1, 'Washer'))
+washer.on('alert', async (level, tick) => {
+  let startTick
+  if(level === 1){
+    startTick = tick
+  } else {
+      const endTick = tick
+      const diff = (endTick >> 0) - (startTick >> 0); // Unsigned 32 bit arithmetic
+      console.log(diff);
+      console.log("washer diff");
+    }
+  sleep(3000).then(() => sendApplianceNotification(await storage.getItem('chatIds'), level === 1, 'Washer'))
+})
+
 dryer.on('alert', async (level, tick) => sendApplianceNotification(await storage.getItem('chatIds'), level === 1, 'Dryer'))
 
 // Create a bot that uses 'polling' to fetch new updates
