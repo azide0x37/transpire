@@ -39,7 +39,7 @@ const bot = new TelegramBot(token, {polling: true});
 bot.onText(/\/alive/, (msg, match) => bot.sendMessage(msg.chat.id, 'Yes, I\'m alive.'))
 bot.onText(/\/init/, async (msg, match) => { /*only allow once*/await storage.init({ dir: 'data' }); bot.sendMessage(msg.chat.id, 'Bot initialized.')})
 bot.onText(/\/help/, (msg, match) => bot.sendMessage(msg.chat.id, "This bot reports on washer/dryer status."))
-bot.onText(/\/subscribe/, (msg, match) => {
+bot.onText(/\/subscribe/, async (msg, match) => {
   const chatId = msg.chat.id;
   let chatIds = []
   try {
@@ -53,9 +53,8 @@ bot.onText(/\/subscribe/, (msg, match) => {
     bot.sendMessage(chatId, "You have successfully subscribed to notifications!")
   }
 });
-bot.onText(/\/unsubscribe/, (msg, match) => {
+bot.onText(/\/unsubscribe/, async (msg, match) => {
   const chatId = msg.chat.id;
-  await storage.removeItem('me');
   let chatIds = []
   try {
     chatIds = await storage.getItem('chatIds');
