@@ -44,13 +44,17 @@ bot.onText(/\/subscribe/, async (msg, match) => {
   let chatIds = []
   try {
     chatIds = await storage.getItem('chatIds');
-    await storage.updateItem('chatIds', Array.from(new Set([...chatIds, chatId])));
-    bot.sendMessage(chatId, "You have successfully subscribed to notifications!")
+    var index = chatIds.indexOf(chatId);
+    if (index > -1) {
+      bot.sendMessage(chatId, "You are already subscribed to notifications.")
+    } else {
+      await storage.updateItem('chatIds', Array.from(new Set([...chatIds, chatId])));
+      bot.sendMessage(chatId, "You have successfully subscribed to notifications!")      
+    }
   }
   catch(e) {
-    // no subscriptions
-    await storage.updateItem('chatIds', [chatId]);
-    bot.sendMessage(chatId, "You are first to successfully subscribed to notifications!")
+    console.log(e);
+    console.log("sub failed");
   }
 });
 bot.onText(/\/unsubscribe/, async (msg, match) => {
@@ -60,7 +64,13 @@ bot.onText(/\/unsubscribe/, async (msg, match) => {
     chatIds = await storage.getItem('chatIds');
     var index = chatIds.indexOf(chatId);
     if (index > -1) {
-      await storage.updateItem('chatIds', chatIds.splice(index, 1));
+      console.log(index);
+      console.log(chatIds);
+      console.log(chatId);
+      
+      let removed = chatIds.splice(index, 1)
+      
+      await storage.updateItem('chatIds', removed);
       bot.sendMessage(chatId, "You have been successfully unsubscribed from notifications.")
     } else {
       bot.sendMessage(chatId, "You weren't subscribed for notifications. Nothing to do!")
@@ -69,7 +79,6 @@ bot.onText(/\/unsubscribe/, async (msg, match) => {
   catch (e) {
     // no subscriptions, do nothing
     console.log(e);
-    
     bot.sendMessage(chatId, "You weren't subscribed for notifications...nobody is. Nothing to do!")
   }
 });
