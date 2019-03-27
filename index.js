@@ -44,7 +44,7 @@ washer.on('alert', async (level, tick) => {
       console.log(diff);
       console.log("washer diff");
     }
-  sleep(3000).then(() => sendApplianceNotification(await storage.getItem('chatIds'), level === 1, 'Washer'))
+  sleep(3000).then(async () => sendApplianceNotification(await storage.getItem('chatIds'), level === 1, 'Washer'))
 })
 
 dryer.on('alert', async (level, tick) => sendApplianceNotification(await storage.getItem('chatIds'), level === 1, 'Dryer'))
