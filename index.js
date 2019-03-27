@@ -44,13 +44,13 @@ bot.onText(/\/subscribe/, async (msg, match) => {
   let chatIds = []
   try {
     chatIds = await storage.getItem('chatIds');
-    let uniq = await storage.setItem('chatIds', Array.from(new Set([...chatIds, chatId])));
+    await storage.setItem('chatIds', Array.from(new Set([...chatIds, chatId])));
     bot.sendMessage(chatId, "You have successfully subscribed to notifications!")
   }
   catch(e) {
     // no subscriptions
     await storage.setItem('chatIds', [chatId]);
-    bot.sendMessage(chatId, "You have successfully subscribed to notifications!")
+    bot.sendMessage(chatId, "You are first to successfully subscribed to notifications!")
   }
 });
 bot.onText(/\/unsubscribe/, async (msg, match) => {
