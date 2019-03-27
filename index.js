@@ -22,13 +22,13 @@ const sendApplianceNotification = (chatIds, stop, device) => {
   })
 }
 
-const washer = new Gpio(2, {
+const washer = new Gpio(4, {
   mode: Gpio.INPUT,
   pullUpDown: Gpio.PUD_DOWN,
   alert: true
 });
 
-const dryer = new Gpio(3, {
+const dryer = new Gpio(17, {
   mode: Gpio.INPUT,
   pullUpDown: Gpio.PUD_DOWN,
   alert: true
