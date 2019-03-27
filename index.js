@@ -3,12 +3,9 @@ const token = require('./token_config.json').token;
 const axios = require('axios')
 const Gpio = require('pigpio').Gpio;
 const storage = require('node-persist');
+import { debounce } from "debounce";
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-const sendApplianceNotification = async (chatIds, stop, device) => {
+const telegramSend = async (chatIds, stop, device) => {
   chatIds.map((chatId) => {
     if(stop){
       bot.sendMessage(chatId, `${device} has finished cycle.`)
@@ -17,6 +14,8 @@ const sendApplianceNotification = async (chatIds, stop, device) => {
     }
   })
 }
+
+const sendApplianceNotification = debounce(telegramSend, 4000)
 
 const washer = new Gpio(17, {
   mode: Gpio.INPUT,
@@ -31,23 +30,20 @@ const dryer = new Gpio(4, {
 });
 
 // Level must be stable for 65s before an alert event is emitted.
-washer.glitchFilter(300000);
-dryer.glitchFilter(300000);
+washer.glitchFilter(3000);
+dryer.glitchFilter(3000);
 
 washer.on('alert', async (level, tick) => {
   let startTick
-  if(level === 1){
-    startTick = tick
-  } else {
-      const endTick = tick
-      const diff = (endTick >> 0) - (startTick >> 0); // Unsigned 32 bit arithmetic
-      console.log(diff);
-      console.log("washer diff");
-    }
-  sleep(3000).then(async () => sendApplianceNotification(await storage.getItem('chatIds'), level === 1, 'Washer'))
+  level === 1 ? sendApplianceNotification(await storage.getItem('chatIds'), true, 'Washer')
+    : sendApplianceNotification(await storage.getItem('chatIds'), false, 'Washer')
 })
 
-dryer.on('alert', async (level, tick) => sendApplianceNotification(await storage.getItem('chatIds'), level === 1, 'Dryer'))
+dryer.on('alert', async (level, tick) => {
+  let startTick
+  level === 1 ? sendApplianceNotification(await storage.getItem('chatIds'), true, 'Dryer')
+    : sendApplianceNotification(await storage.getItem('chatIds'), false, 'Dryer')
+})
 
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, {polling: true});
