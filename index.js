@@ -3,7 +3,7 @@ const token = require('./token_config.json').token;
 const axios = require('axios')
 const Gpio = require('pigpio').Gpio;
 const storage = require('node-persist');
-import { debounce } from "debounce";
+const debounce = require('debounce');
 
 const telegramSend = async (chatIds, stop, device) => {
   chatIds.map((chatId) => {
