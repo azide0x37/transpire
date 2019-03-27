@@ -37,7 +37,7 @@ dryer.on('alert', async (level, tick) => sendApplianceNotification(await storage
 const bot = new TelegramBot(token, {polling: true});
 
 bot.onText(/\/alive/, (msg, match) => bot.sendMessage(msg.chat.id, 'Yes, I\'m alive.'))
-bot.onText(/\/init/, (msg, match) => { /*only allow once*/await storage.init({ dir: 'data' }); bot.sendMessage(msg.chat.id, 'Bot initialized.')})
+bot.onText(/\/init/, async (msg, match) => { /*only allow once*/await storage.init({ dir: 'data' }); bot.sendMessage(msg.chat.id, 'Bot initialized.')})
 bot.onText(/\/help/, (msg, match) => bot.sendMessage(msg.chat.id, "This bot reports on washer/dryer status."))
 bot.onText(/\/subscribe/, (msg, match) => {
   const chatId = msg.chat.id;
