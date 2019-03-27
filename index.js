@@ -27,8 +27,8 @@ const dryer = new Gpio(17, {
 });
 
 // Level must be stable for 65s before an alert event is emitted.
-washer.glitchFilter(65000000);
-dryer.glitchFilter(65000000);
+washer.glitchFilter(650000);
+dryer.glitchFilter(650000);
 
 washer.on('alert', async (level, tick) => sendApplianceNotification(await storage.getItem('chatIds'), level === 1, 'Washer'))
 dryer.on('alert', async (level, tick) => sendApplianceNotification(await storage.getItem('chatIds'), level === 1, 'Dryer'))
