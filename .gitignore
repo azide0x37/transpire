@@ -2,3 +2,4 @@
 token_config.json
 *.exe
 /data
+package-lock.json
