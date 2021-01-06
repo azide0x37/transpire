@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "debounce": "^1.2.0",
     "node-persist": "^3.0.4",
     "node-telegram-bot-api": "^0.30.0",
